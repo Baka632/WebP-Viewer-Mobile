@@ -1,0 +1,53 @@
+﻿<Page
+    x:Class="WebPViewerMobile.Views.ImageViewPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helper="using:WebPViewerMobile.Helpers"
+    xmlns:local="using:WebPViewerMobile.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:sys="using:System"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <Grid>
+        <FlipView
+            x:Name="ImageView"
+            ItemsSource="{x:Bind ViewModel.ImageSources}"
+            Visibility="{x:Bind ViewModel.IsImageAvailable, Mode=OneWay}">
+            <FlipView.ItemTemplate>
+                <DataTemplate x:DataType="BitmapSource">
+                    <ScrollViewer
+                        HorizontalScrollBarVisibility="Auto"
+                        VerticalScrollBarVisibility="Auto"
+                        ZoomMode="Enabled">
+                        <Image
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Stretch="Uniform"
+                            Source="{x:Bind}" />
+                    </ScrollViewer>
+                </DataTemplate>
+            </FlipView.ItemTemplate>
+        </FlipView>
+
+        <ProgressRing
+            Width="100"
+            Height="100"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            IsActive="{x:Bind ViewModel.IsLoading, Mode=OneWay}" />
+
+        <StackPanel
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Visibility="{x:Bind helper:XamlHelper.InverseVisibility(ViewModel.IsImageAvailable), Mode=OneWay}">
+            <TextBlock
+                Margin="0,0,0,10"
+                FontSize="40"
+                FontWeight="Bold"
+                Text=":(" />
+            <TextBlock FontSize="20" Text="{x:Bind ViewModel.ErrorMessage, Mode=OneWay}" />
+        </StackPanel>
+    </Grid>
+</Page>
