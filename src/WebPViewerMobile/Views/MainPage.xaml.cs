@@ -1,20 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
+﻿using WebPViewerMobile.Helpers;
 using WebPViewerMobile.ViewModels;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.Storage;
-using Windows.Storage.Pickers;
+using Windows.ApplicationModel.Core;
+using Windows.System;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
 // https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x804 上介绍了“空白页”项模板
 
@@ -25,20 +15,82 @@ namespace WebPViewerMobile.Views
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        public MainPageViewModel ViewModel { get; }
+        public static CoreDispatcher CoreDispatcher { get; private set; }
+
+        internal static readonly DispatcherQueue DispatcherQueue = DispatcherQueue.GetForCurrentThread();
+        private bool IsTitleBarTextBlockForwardBegun = false;
+        private bool IsFirstRun = true;
+
         public MainPage()
         {
             this.InitializeComponent();
+
+            AcrylicHelper.TrySetAcrylicBrush(this);
+            CoreDispatcher = Dispatcher;
+            ViewModel = new MainPageViewModel(ContentFrame);
+            TitleBarHelper.BackButtonVisibilityChangedEvent += OnBackButtonVisibilityChanged;
+            TitleBarHelper.TitleBarVisibilityChangedEvent += OnTitleBarVisibilityChanged;
         }
 
-        private async void OpenFile(object sender, RoutedEventArgs e)
+        private void OnTitleBarVisibilityChanged(CoreApplicationViewTitleBar bar)
         {
-            FileOpenPicker picker = new FileOpenPicker();
-            picker.FileTypeFilter.Add(".webp");
-            StorageFile file = await picker.PickSingleFileAsync();
-            if (file != null)
+            if (bar.IsVisible)
             {
-                Frame.Navigate(typeof(ImageViewPage),file);
+                StartTitleBarAnimation(Visibility.Visible);
             }
+            else
+            {
+                StartTitleBarAnimation(Visibility.Collapsed);
+            }
+        }
+
+        private void OnBackButtonVisibilityChanged(BackButtonVisibilityChangedEventArgs args)
+        {
+            StartTitleTextBlockAnimation(args.BackButtonVisibility);
+        }
+
+        private void StartTitleTextBlockAnimation(AppViewBackButtonVisibility buttonVisibility)
+        {
+            switch (buttonVisibility)
+            {
+                case AppViewBackButtonVisibility.Disabled:
+                case AppViewBackButtonVisibility.Visible:
+                    if (IsTitleBarTextBlockForwardBegun)
+                    {
+                        goto default;
+                    }
+                    TitleBarTextBlockForward.Begin();
+                    IsTitleBarTextBlockForwardBegun = true;
+                    break;
+                case AppViewBackButtonVisibility.Collapsed:
+                    TitleBarTextBlockBack.Begin();
+                    IsTitleBarTextBlockForwardBegun = false;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void StartTitleBarAnimation(Visibility visibility)
+        {
+            if (IsFirstRun)
+            {
+                IsFirstRun = false;
+                TitleBar.Visibility = visibility;
+                return;
+            }
+
+            switch (visibility)
+            {
+                case Visibility.Visible:
+                    TitleBarShow.Begin();
+                    break;
+                case Visibility.Collapsed:
+                default:
+                    break;
+            }
+            TitleBar.Visibility = visibility;
         }
     }
 }

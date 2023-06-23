@@ -6,13 +6,12 @@
     xmlns:helper="using:WebPViewerMobile.Helpers"
     xmlns:local="using:WebPViewerMobile.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:sys="using:System"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
     <Grid>
         <FlipView
             x:Name="ImageView"
+            Background="Transparent"
             ItemsSource="{x:Bind ViewModel.ImageSources}"
             Visibility="{x:Bind ViewModel.IsImageAvailable, Mode=OneWay}">
             <FlipView.ItemTemplate>
@@ -24,8 +23,8 @@
                         <Image
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            Stretch="Uniform"
-                            Source="{x:Bind}" />
+                            Source="{x:Bind}"
+                            Stretch="Uniform" />
                     </ScrollViewer>
                 </DataTemplate>
             </FlipView.ItemTemplate>
