@@ -42,12 +42,6 @@ namespace WebPViewerMobile
                 // 创建要充当导航上下文的框架，并导航到第一页
                 rootFrame = new Frame();
 
-                //显示标题栏上的后退按钮
-                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
-                SystemNavigationManager.GetForCurrentView().BackRequested += OnBackRequested;
-                Window.Current.CoreWindow.Dispatcher.AcceleratorKeyActivated += OnAcceleratorKeyActivated;
-                Window.Current.CoreWindow.PointerPressed += OnPointerPressed;
-
                 rootFrame.NavigationFailed += OnNavigationFailed;
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
@@ -71,91 +65,6 @@ namespace WebPViewerMobile
                 // 确保当前窗口处于活动状态
                 Window.Current.Activate();
             }
-        }
-
-        /// <summary>
-        /// 当按下快捷键时调用
-        /// </summary>
-        /// <param name="sender">事件发送者</param>
-        /// <param name="e">事件参数</param>
-        private void OnAcceleratorKeyActivated(CoreDispatcher sender, AcceleratorKeyEventArgs args)
-        {
-            //支持 Alt + 左/右方向键 导航
-            if (args.EventType == CoreAcceleratorKeyEventType.SystemKeyDown
-                && (args.VirtualKey == VirtualKey.Left || args.VirtualKey == VirtualKey.Right)
-                && args.KeyStatus.IsMenuKeyDown == true
-                && !args.Handled)
-            {
-                if (args.VirtualKey == VirtualKey.Left)
-                {
-                    args.Handled = TryGoBack();
-                }
-                else if (args.VirtualKey == VirtualKey.Right)
-                {
-                    args.Handled = TryGoForward();
-                }
-            }
-        }
-
-        /// <summary>
-        /// 当鼠标按键时调用
-        /// </summary>
-        /// <param name="sender">事件发送者</param>
-        /// <param name="e">事件参数</param>
-        private void OnPointerPressed(CoreWindow sender, PointerEventArgs args)
-        {
-            //支持扩展鼠标按键导航
-            if (args.CurrentPoint.Properties.IsXButton1Pressed)
-            {
-                args.Handled = !TryGoBack();
-            }
-            else if (args.CurrentPoint.Properties.IsXButton2Pressed)
-            {
-                args.Handled = !TryGoForward();
-            }
-        }
-
-        /// <summary>
-        /// 当系统请求进行向后导航时调用
-        /// </summary>
-        /// <param name="sender">事件发送者</param>
-        /// <param name="e">事件参数</param>
-        private void OnBackRequested(object sender, BackRequestedEventArgs e)
-        {
-            if (!e.Handled)
-            {
-                e.Handled = TryGoBack();
-            }
-        }
-
-        /// <summary>
-        /// 尝试进行向后导航
-        /// </summary>
-        /// <returns>指示导航是否成功的值</returns>
-        public static bool TryGoBack()
-        {
-            Frame rootFrame = Window.Current.Content as Frame;
-            if (rootFrame.CanGoBack)
-            {
-                rootFrame.GoBack();
-                return true;
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// 尝试进行向前导航
-        /// </summary>
-        /// <returns>指示导航是否成功的值</returns>
-        private bool TryGoForward()
-        {
-            Frame rootFrame = Window.Current.Content as Frame;
-            if (rootFrame.CanGoForward)
-            {
-                rootFrame.GoForward();
-                return true;
-            }
-            return false;
         }
 
         /// <summary>
