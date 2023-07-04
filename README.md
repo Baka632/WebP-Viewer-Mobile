@@ -3,6 +3,8 @@
 # WebP Viewer Mobile
 为 Windows 10 Mobile 构建的 WebP 图像查看器!
 
+~~你非要在电脑上用也行~~
+
 </div>
 
 ## 最低支持平台

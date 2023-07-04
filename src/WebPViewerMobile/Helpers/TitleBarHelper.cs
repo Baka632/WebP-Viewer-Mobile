@@ -1,5 +1,6 @@
 ﻿using System;
 using Windows.ApplicationModel.Core;
+using Windows.System.Profile;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
@@ -19,29 +20,32 @@ namespace WebPViewerMobile.Helpers
 
         public TitleBarHelper(Frame frame)
         {
-            CoreTitleBar.ExtendViewIntoTitleBar = true;
-            CoreTitleBar.IsVisibleChanged += OnTitleBarVisibilityChanged;
-
-            #region TitleBarColor
-            PresentationTitleBar.ButtonBackgroundColor = Colors.Transparent;
-            Color ForegroundColor;
-            switch (Application.Current.RequestedTheme)
+            if (AnalyticsInfo.VersionInfo.DeviceFamily != "Windows.Mobile")
             {
-                case ApplicationTheme.Light:
-                    ForegroundColor = Colors.Black;
-                    break;
-                case ApplicationTheme.Dark:
-                    ForegroundColor = Colors.White;
-                    break;
-                default:
-                    ForegroundColor = Colors.White;
-                    break;
+                CoreTitleBar.ExtendViewIntoTitleBar = true;
+                CoreTitleBar.IsVisibleChanged += OnTitleBarVisibilityChanged;
+
+                #region TitleBarColor
+                PresentationTitleBar.ButtonBackgroundColor = Colors.Transparent;
+                Color ForegroundColor;
+                switch (Application.Current.RequestedTheme)
+                {
+                    case ApplicationTheme.Light:
+                        ForegroundColor = Colors.Black;
+                        break;
+                    case ApplicationTheme.Dark:
+                        ForegroundColor = Colors.White;
+                        break;
+                    default:
+                        ForegroundColor = Colors.White;
+                        break;
+                }
+                PresentationTitleBar.ButtonForegroundColor = ForegroundColor;
+                #endregion
+
+                CurrentFrame = frame;
+                CurrentFrame.Navigated += CurrentFrame_Navigated;
             }
-            PresentationTitleBar.ButtonForegroundColor = ForegroundColor;
-            #endregion
-            
-            CurrentFrame = frame;
-            CurrentFrame.Navigated += CurrentFrame_Navigated;
         }
 
         private void OnTitleBarVisibilityChanged(CoreApplicationViewTitleBar sender, object args)

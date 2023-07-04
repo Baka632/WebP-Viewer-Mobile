@@ -5,6 +5,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using System.Collections.Generic;
 using WebPViewerMobile.Helpers;
+using System.Linq;
 
 // https://go.microsoft.com/fwlink/?LinkId=234238 上介绍了“空白页”项模板
 
@@ -26,7 +27,7 @@ namespace WebPViewerMobile.Views
             FileOpenPicker picker = new FileOpenPicker();
             picker.FileTypeFilter.Add(".webp");
             IReadOnlyList<StorageFile> files = await picker.PickMultipleFilesAsync();
-            if (files != null)
+            if (files != null && files.Any())
             {
                 Frame.Navigate(typeof(ImageViewPage), files);
             }

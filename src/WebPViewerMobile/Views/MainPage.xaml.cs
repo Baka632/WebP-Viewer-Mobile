@@ -2,6 +2,7 @@
 using WebPViewerMobile.ViewModels;
 using Windows.ApplicationModel.Core;
 using Windows.System;
+using Windows.System.Profile;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -26,8 +27,16 @@ namespace WebPViewerMobile.Views
 
             AcrylicHelper.TrySetAcrylicBrush(this);
             ViewModel = new MainPageViewModel(ContentFrame);
-            TitleBarHelper.BackButtonVisibilityChangedEvent += OnBackButtonVisibilityChanged;
-            TitleBarHelper.TitleBarVisibilityChangedEvent += OnTitleBarVisibilityChanged;
+
+            if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile")
+            {
+                TitleBarTextBlock.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                TitleBarHelper.BackButtonVisibilityChangedEvent += OnBackButtonVisibilityChanged;
+                TitleBarHelper.TitleBarVisibilityChangedEvent += OnTitleBarVisibilityChanged;
+            }
         }
 
         private void OnTitleBarVisibilityChanged(CoreApplicationViewTitleBar bar)

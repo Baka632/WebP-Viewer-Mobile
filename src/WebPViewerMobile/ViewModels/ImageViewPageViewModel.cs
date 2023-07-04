@@ -8,6 +8,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Universal.WebP;
 using WebPViewerMobile.Helpers;
+using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Search;
 using Windows.UI.Xaml.Media.Imaging;
