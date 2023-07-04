@@ -16,9 +16,7 @@ namespace WebPViewerMobile.Views
     public sealed partial class MainPage : Page
     {
         public MainPageViewModel ViewModel { get; }
-        public static CoreDispatcher CoreDispatcher { get; private set; }
 
-        internal static readonly DispatcherQueue DispatcherQueue = DispatcherQueue.GetForCurrentThread();
         private bool IsTitleBarTextBlockForwardBegun = false;
         private bool IsFirstRun = true;
 
@@ -27,7 +25,6 @@ namespace WebPViewerMobile.Views
             this.InitializeComponent();
 
             AcrylicHelper.TrySetAcrylicBrush(this);
-            CoreDispatcher = Dispatcher;
             ViewModel = new MainPageViewModel(ContentFrame);
             TitleBarHelper.BackButtonVisibilityChangedEvent += OnBackButtonVisibilityChanged;
             TitleBarHelper.TitleBarVisibilityChangedEvent += OnTitleBarVisibilityChanged;
